@@ -9,6 +9,8 @@ static sbool   g_isInit;
 static suint   g_order;
 static suint   g_size;
 static suint   g_used;
+static suint   g_minbs;
+static suint   g_maxbs;
 static sbyte * g_data;
 
 void
@@ -23,6 +25,8 @@ sm_init ( suint ordr )
         g_isInit = STRUE;
         g_order  = ordr;
         g_size   = 1 << ordr;
+        g_minbs  = 1;
+        g_maxbs  = -1;
         g_data   = calloc ( g_size, bs );
 
         assert ( g_data );
@@ -40,6 +44,8 @@ sm_quit ( void )
         g_order  = 0;
         g_size   = 0;
         g_used   = 0;
+        g_minbs  = 0;
+        g_maxbs  = 0;
         g_data   = NULL;
 }
 
@@ -53,6 +59,8 @@ sm_save ( FILE * file )
         fwrite ( &g_order,  sizeof ( suint ), 1, file );
         fwrite ( &g_size,   sizeof ( suint ), 1, file );
         fwrite ( &g_used,   sizeof ( suint ), 1, file );
+        fwrite ( &g_minbs,  sizeof ( suint ), 1, file );
+        fwrite ( &g_maxbs,  sizeof ( suint ), 1, file );
 
         fwrite ( g_data, sizeof ( sbyte ), g_size, file );
 }
@@ -67,6 +75,8 @@ sm_load ( FILE * file )
         fread ( &g_order,  sizeof ( suint ), 1, file );
         fread ( &g_size,   sizeof ( suint ), 1, file );
         fread ( &g_used,   sizeof ( suint ), 1, file );
+        fread ( &g_minbs,  sizeof ( suint ), 1, file );
+        fread ( &g_maxbs,  sizeof ( suint ), 1, file );
 
         g_data = calloc ( g_size, sizeof ( *g_data ));
 
@@ -105,6 +115,38 @@ sm_overCap ( void )
         assert ( g_isInit );
 
         return g_used > ( g_size / 2 );
+}
+
+suint
+sm_getMinBSize ( void )
+{
+        return g_minbs;
+}
+
+suint
+sm_getMaxBSize ( void )
+{
+        return g_maxbs;
+}
+
+void
+sm_setMinBSize ( suint size )
+{
+        assert ( g_isInit );
+        assert ( size );
+        assert ( size <= g_maxbs );
+
+        g_minbs = size;
+}
+
+void
+sm_setMaxBSize ( suint size )
+{
+        assert ( g_isInit );
+        assert ( size );
+        assert ( size >= g_minbs );
+
+        g_maxbs = size;
 }
 
 sbool

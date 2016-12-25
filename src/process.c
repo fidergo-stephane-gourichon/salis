@@ -604,8 +604,8 @@ alloc ( SProc * proc, sbool fwrd )
 
         bs = *rg [ 0 ];
 
-        /* halt if block size is zero */
-        if ( !bs ) {
+        /* halt if block size is of invalid size */
+        if ( bs < sm_getMinBSize () || bs > sm_getMaxBSize ()) {
                 return;
         }
 

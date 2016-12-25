@@ -1,9 +1,6 @@
 #include <assert.h>
 #include <salis.h>
 
-#define MLINE_SZ 64
-#define PLINE_SZ  6
-
 sbool
 sl_load ( const char * flnm )
 {

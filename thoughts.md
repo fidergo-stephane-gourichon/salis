@@ -11,8 +11,8 @@ Requisites
 - Salis will be written in C89
 - Salis is an API
 
-Organisms
----------
+Organisms consist of
+--------------------
 - Registers
 - Instruction pointer
 - Seeker pointer

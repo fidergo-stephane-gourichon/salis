@@ -1,31 +1,30 @@
-SALIS: Simple A-Life Simulator
-==============================
+### SALIS: Simple A-Life Simulator
 
-Overview
---------
-Salis is a simulation similar to Tierra. On it, organisms
-compete for space and time. Organisms evolve and replicate.
+## Overview
+Salis is a simulation similar to Tierra.
+On it, self-replicating organisms compete for space and time.
+Over time, organisms evolve into novel forms.
 
-Requisites
-----------
-- Salis will be written in C89
-- Salis is an API
+To watch an introductory video about SALIS, go here:
+[SALIS Intro](https://www.youtube.com/watch?v=jCFmOCvy6po)
 
-Organisms consist of
---------------------
+## Summary
+- Salis is written in C
+- Salis is an API, so an UI must be written to communicate with it
+
+## Organisms consist of
 - Registers
+- Stack
 - Instruction pointer
 - Seeker pointer
 - Two associated memory blocks
 
-Queue
------
+## Queue
 - Newborn organisms are placed on top of the queue
 - Organisms are killed at the bottom of the queue
 - Organisms halt when they execute faulty instructions (faults)
 
-Faults
-------
+## Faults
 - IP or SP reaching ends of memory
 - Perform search without a key
 - Writing to non-local, allocated address

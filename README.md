@@ -1,4 +1,4 @@
-### SALIS: Simple A-Life Simulator
+# SALIS: A-Life Simulator
 
 ## Overview
 Salis is a simulation similar to Tierra.

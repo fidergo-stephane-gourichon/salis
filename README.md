@@ -5,8 +5,8 @@ Salis is a simulation similar to Tierra.
 On it, self-replicating organisms compete for space and time.
 Over time, organisms evolve into novel forms.
 
-To watch an introductory video about SALIS, go here:
-[SALIS Intro](https://www.youtube.com/watch?v=jCFmOCvy6po)
+To watch an introductory video about SALIS,
+[go here.](https://www.youtube.com/watch?v=jCFmOCvy6po)
 
 ## Summary
 - Salis is written in C

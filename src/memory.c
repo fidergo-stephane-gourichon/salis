@@ -9,6 +9,7 @@ static sbool   g_isInit;
 static suint   g_order;
 static suint   g_size;
 static suint   g_used;
+static suint   g_cap;
 static suint   g_minbs;
 static suint   g_maxbs;
 static sbyte * g_data;
@@ -25,6 +26,7 @@ sm_init ( suint ordr )
         g_isInit = STRUE;
         g_order  = ordr;
         g_size   = 1 << ordr;
+        g_cap    = g_size / 2;
         g_minbs  = 1;
         g_maxbs  = -1;
         g_data   = calloc ( g_size, bs );
@@ -44,6 +46,7 @@ sm_quit ( void )
         g_order  = 0;
         g_size   = 0;
         g_used   = 0;
+        g_cap    = 0;
         g_minbs  = 0;
         g_maxbs  = 0;
         g_data   = NULL;
@@ -59,6 +62,7 @@ sm_save ( FILE * file )
         fwrite ( &g_order,  sizeof ( suint ), 1, file );
         fwrite ( &g_size,   sizeof ( suint ), 1, file );
         fwrite ( &g_used,   sizeof ( suint ), 1, file );
+        fwrite ( &g_cap,    sizeof ( suint ), 1, file );
         fwrite ( &g_minbs,  sizeof ( suint ), 1, file );
         fwrite ( &g_maxbs,  sizeof ( suint ), 1, file );
 
@@ -75,6 +79,7 @@ sm_load ( FILE * file )
         fread ( &g_order,  sizeof ( suint ), 1, file );
         fread ( &g_size,   sizeof ( suint ), 1, file );
         fread ( &g_used,   sizeof ( suint ), 1, file );
+        fread ( &g_cap,    sizeof ( suint ), 1, file );
         fread ( &g_minbs,  sizeof ( suint ), 1, file );
         fread ( &g_maxbs,  sizeof ( suint ), 1, file );
 
@@ -114,7 +119,13 @@ sm_overCap ( void )
 {
         assert ( g_isInit );
 
-        return g_used > ( g_size / 2 );
+        return g_used > g_cap;
+}
+
+suint
+sm_getCap ( void )
+{
+        return g_cap;
 }
 
 suint
@@ -127,6 +138,16 @@ suint
 sm_getMaxBSize ( void )
 {
         return g_maxbs;
+}
+
+void
+sm_setCap ( suint ncap )
+{
+        assert ( g_isInit );
+        assert ( ncap );
+        assert ( ncap <= g_size );
+
+        g_cap = ncap;
 }
 
 void

@@ -13,8 +13,10 @@ suint sm_getSize     ( void );
 suint sm_getUsed     ( void );
 sbool sm_overCap     ( void );
 
+suint sm_getCap      ( void );
 suint sm_getMinBSize ( void );
 suint sm_getMaxBSize ( void );
+void  sm_setCap      ( suint ncap );
 void  sm_setMinBSize ( suint size );
 void  sm_setMaxBSize ( suint size );
 

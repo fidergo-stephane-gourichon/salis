@@ -1,5 +1,4 @@
 ## TODO LIST
-+ Add memory capacity setter
 + Add new organism mutation
 + Test abiogenesis
 + Maybe add shrink capability to PROC array

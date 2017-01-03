@@ -20,11 +20,9 @@ suint se_getPNext  ( void );
 void  se_setWRate  ( suint rate );
 void  se_setCRate  ( suint rate );
 void  se_setPRate  ( suint rate );
-void  se_setNRate  ( suint rate );
 
 sbyte se_wMutate   ( sbyte inst );
 void  se_cMutate   ( void );
 void  se_pMutate   ( void );
-void  se_nMutate   ( void );
 
 #endif

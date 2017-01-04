@@ -1,9 +1,8 @@
 #ifndef SALIS_PROCESS_H
 #define SALIS_PROCESS_H
 
-#define SPROC_RGCNT 4
-#define SPROC_STKSZ 8
-#define SPELM_COUNT ( 6 + SPROC_RGCNT + SPROC_STKSZ )
+#define SPROC_RGCNT 6
+#define SPELM_COUNT ( 6 + SPROC_RGCNT )
 
 struct SProc_t
 {
@@ -16,7 +15,6 @@ struct SProc_t
         suint sp;
 
         suint reg [ SPROC_RGCNT ];
-        suint stk [ SPROC_STKSZ ];
 };
 
 typedef struct SProc_t SProc;

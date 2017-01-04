@@ -25,7 +25,7 @@ si_isMod ( sbyte inst )
 {
         assert ( si_isInst ( inst ));
 
-        return between ( inst, SNOP1, SNOP4 );
+        return between ( inst, SNOP1, SNOP6 );
 }
 
 sbool

@@ -922,56 +922,6 @@ r2op ( SProc * proc, sbyte inst )
         proc -> sp = proc -> ip;
 }
 
-static void
-push ( SProc * proc )
-{
-        suint * rg;
-        int     si;
-
-        assert ( g_isInit );
-        assert ( proc );
-        assert ( !isFree ( proc ));
-
-        setMods ( proc, &rg, 1, SFALSE );
-
-        for ( si = SPROC_STKSZ - 1; si; si -- ) {
-                suint * da = &proc -> stk [ si ];
-                suint   sa = proc -> stk [ si - 1 ];
-
-                *da = sa;
-        }
-
-        proc -> stk [ 0 ] = *rg;
-        proc -> ip ++;
-        proc -> sp = proc -> ip;
-}
-
-static void
-pop ( SProc * proc )
-{
-        suint * rg;
-        int     si;
-
-        assert ( g_isInit );
-        assert ( proc );
-        assert ( !isFree ( proc ));
-
-        setMods ( proc, &rg, 1, SFALSE );
-
-        *rg = proc -> stk [ 0 ];
-
-        for ( si = 0; si < SPROC_STKSZ - 1; si ++ ) {
-                suint * da = &proc -> stk [ si ];
-                suint   sa = proc -> stk [ si + 1 ];
-
-                *da = sa;
-        }
-
-        proc -> stk [ SPROC_STKSZ - 1 ] = 0;
-        proc -> ip ++;
-        proc -> sp = proc -> ip;
-}
-
 #ifndef NDEBUG
 
 static void
@@ -1121,12 +1071,6 @@ sp_cycle ( suint pidx )
         case SDUPL:
         case SSWAP:
                 r2op ( pr, in );
-                break;
-        case SPSHN:
-                push ( pr );
-                break;
-        case SPOPN:
-                pop ( pr );
                 break;
         default:
                 pr -> ip ++;

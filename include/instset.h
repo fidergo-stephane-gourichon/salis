@@ -9,6 +9,8 @@
         SINST( SNOP2, '2' ) \
         SINST( SNOP3, '3' ) \
         SINST( SNOP4, '4' ) \
+        SINST( SNOP5, '5' ) \
+        SINST( SNOP6, '6' ) \
                             \
         SINST( SJMPB, '(' ) \
         SINST( SJMPF, ')' ) \
@@ -38,8 +40,6 @@
         SINST( SWRTE, ':' ) \
         SINST( SDUPL, '"' ) \
         SINST( SSWAP, 'x' ) \
-        SINST( SPSHN, '#' ) \
-        SINST( SPOPN, '~' ) \
                             \
         SINST( SKEYA, 'a' ) \
         SINST( SKEYB, 'b' ) \

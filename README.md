@@ -15,7 +15,6 @@ To watch an introductory video about *SALIS*,
 
 ### Organisms consist of
 - Registers
-- Stack
 - Instruction pointer
 - Seeker pointer
 - Two associated memory blocks

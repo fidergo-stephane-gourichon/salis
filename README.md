@@ -20,7 +20,7 @@ travel those distances at a speed of 1 byte per update. In other words, in
 SALIS information can't travel faster than 1 byte per update (SALIS' speed of
 light, if you will).
 
-To watch an introductory video about *SALIS*,
+To watch an introductory video about *SALIS*
 [go here.](https://www.youtube.com/watch?v=jCFmOCvy6po)
 
 ### Details
@@ -45,7 +45,7 @@ To watch an introductory video about *SALIS*,
 - Writing to non-local, allocated address
 - Allocating block of less than minimum size
 - Allocating block of more than maximum size
-- SP on non-adjacent address when allocating block
+- SP on address non-adjacent to child memory block while allocating
 - Swapping when not owning 2 memory blocks
 - Splitting when not owning 2 memory blocks
 - Dividing by zero

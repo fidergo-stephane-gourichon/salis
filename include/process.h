@@ -37,8 +37,15 @@ sbool   sp_isLocal  ( suint pidx, suint addr );
 sbool   sp_isOnMB1  ( suint pidx, suint addr );
 sbool   sp_isOnMB2  ( suint pidx, suint addr );
 
+sbool   sp_getFHalt ( void );
+void    sp_setFHalt ( sbool halt );
+
 void    sp_create   ( suint mb1p, suint mb1s, suint lock, sbool isal );
 void    sp_kill     ( void );
+
+#ifndef NDEBUG
+void    sp_isValid  ( suint pidx );
+#endif
 
 void    sp_cycle    ( suint pidx );
 

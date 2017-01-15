@@ -9,6 +9,7 @@ static suint   g_cap;
 static suint   g_first;
 static suint   g_last;
 static SProc * g_procs;
+static sbool   g_fhalt;
 
 void
 sp_init ( void )
@@ -41,6 +42,7 @@ sp_quit ( void )
         g_first  = 0;
         g_last   = 0;
         g_procs  = NULL;
+        g_fhalt  = SFALSE;
 }
 
 void
@@ -54,6 +56,7 @@ sp_save ( FILE * file )
         fwrite ( &g_cap,    sizeof ( suint ), 1, file );
         fwrite ( &g_first,  sizeof ( suint ), 1, file );
         fwrite ( &g_last,   sizeof ( suint ), 1, file );
+        fwrite ( &g_fhalt,  sizeof ( sbool ), 1, file );
 
         fwrite ( g_procs, sizeof ( SProc ), g_cap, file );
 }
@@ -69,6 +72,7 @@ sp_load ( FILE * file )
         fread ( &g_cap,    sizeof ( suint ), 1, file );
         fread ( &g_first,  sizeof ( suint ), 1, file );
         fread ( &g_last,   sizeof ( suint ), 1, file );
+        fread ( &g_fhalt,  sizeof ( sbool ), 1, file );
 
         g_procs = calloc ( g_cap, sizeof ( SProc ));
 
@@ -220,6 +224,20 @@ sp_isOnMB2 ( suint pidx, suint addr )
         pr = sp_getProc ( pidx );
 
         return inBlock ( pr -> b2p, pr -> b2s, addr );
+}
+
+sbool
+sp_getFHalt ( void )
+{
+        return g_fhalt;
+}
+
+void
+sp_setFHalt ( sbool halt )
+{
+        assert ( g_isInit );
+
+        g_fhalt = halt;
 }
 
 static void
@@ -400,6 +418,19 @@ sp_kill ( void )
         g_first %= g_cap;
 }
 
+static void
+onFault ( SProc * proc )
+{
+        assert ( g_isInit );
+        assert ( proc );
+        assert ( !isFree ( proc ));
+
+        if ( !g_fhalt ) {
+                proc -> ip ++;
+                proc -> sp = proc -> ip;
+        }
+}
+
 static sbool
 seek ( SProc * proc, sbool fwrd )
 {
@@ -414,12 +445,14 @@ seek ( SProc * proc, sbool fwrd )
         na = proc -> ip + 1;
 
         if ( !sm_isValid ( na )) {
+                onFault ( proc );
                 return SFALSE;
         }
 
         ni = sm_getInst ( na );
 
         if ( !si_isKey ( ni )) {
+                onFault ( proc );
                 return SFALSE;
         }
 
@@ -597,6 +630,7 @@ alloc ( SProc * proc, sbool fwrd )
 
         /* halt if already allocated */
         if (( proc -> ip == proc -> sp ) && proc -> b2s ) {
+                onFault ( proc );
                 return;
         }
 
@@ -606,6 +640,7 @@ alloc ( SProc * proc, sbool fwrd )
 
         /* halt if block size is of invalid size */
         if ( bs < sm_getMinBSize () || bs > sm_getMaxBSize ()) {
+                onFault ( proc );
                 return;
         }
 
@@ -640,6 +675,7 @@ alloc ( SProc * proc, sbool fwrd )
                 suint ad = proc -> b2p + of;
 
                 if ( ad != proc -> sp ) {
+                        onFault ( proc );
                         return;
                 }
         }
@@ -667,6 +703,7 @@ bswap ( SProc * proc )
         assert ( !isFree ( proc ));
 
         if ( !proc -> b2s ) {
+                onFault ( proc );
                 return;
         }
 
@@ -693,6 +730,7 @@ bclear ( SProc * proc )
         assert ( !isFree ( proc ));
 
         if ( !proc -> b2s ) {
+                onFault ( proc );
                 return;
         }
 
@@ -713,6 +751,7 @@ split ( SProc * proc )
         assert ( !isFree ( proc ));
 
         if ( !proc -> b2s ) {
+                onFault ( proc );
                 return;
         }
 
@@ -744,6 +783,7 @@ r3op ( SProc * proc, sbyte inst )
 
         /* halt if division by zero */
         if (( inst == SDIVN ) && ( *rg [ 2 ] == 0 )) {
+                onFault ( proc );
                 return;
         }
 
@@ -818,6 +858,7 @@ load ( SProc * proc )
         setMods ( proc, rg, 2, SFALSE );
 
         if ( !sm_isValid ( *rg [ 0 ] )) {
+                onFault ( proc );
                 return;
         }
 
@@ -863,15 +904,18 @@ write ( SProc * proc )
         setMods ( proc, rg, 2, SFALSE );
 
         if ( !sm_isValid ( *rg [ 0 ] )) {
+                onFault ( proc );
                 return;
         }
 
         if ( !si_isInst ( *rg [ 1 ] )) {
+                onFault ( proc );
                 return;
         }
 
         if ( proc -> sp == *rg [ 0 ] ) {
                 if ( !writable ( proc, *rg [ 0 ] )) {
+                        onFault ( proc );
                         return;
                 }
 
@@ -971,8 +1015,8 @@ isUsedValid ( SProc * proc )
         }
 }
 
-static void
-isValid ( suint pidx )
+void
+sp_isValid ( suint pidx )
 {
         SProc * pr;
 
@@ -1002,8 +1046,10 @@ sp_cycle ( suint pidx )
 
         pr = sp_getProc ( pidx );
 
-        if ( !sm_isValid ( pr -> ip )) { return; }
-        if ( !sm_isValid ( pr -> sp )) { return; }
+        if ( !sm_isValid ( pr -> ip ) || !sm_isValid ( pr -> sp )) {
+                onFault ( pr );
+                return;
+        }
 
         in = sm_getInst ( pr -> ip );
 
@@ -1076,8 +1122,4 @@ sp_cycle ( suint pidx )
                 pr -> ip ++;
                 pr -> sp = pr -> ip;
         }
-
-#ifndef NDEBUG
-        isValid ( pidx );
-#endif
 }

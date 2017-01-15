@@ -22,7 +22,7 @@ To watch an introductory video about *SALIS*,
 ### Queue
 - Newborn organisms are placed on top of the queue
 - Organisms are killed at the bottom of the queue
-- Organisms halt when they execute faulty instructions (faults)
+- Organisms may halt on, or ignore, faulty instructions (faults)
 
 ### Faults
 - IP or SP reaching ends of memory

@@ -94,6 +94,7 @@ s_cycle ( void )
 
         pidx = sp_getLast ();
 
+        /* update all procs */
         while ( 1 ) {
                 sp_cycle ( pidx );
 
@@ -105,11 +106,20 @@ s_cycle ( void )
                 pidx %= sp_getCap ();
         }
 
+        /* check if all procs are valid */
+#ifndef NDEBUG
+        for ( pidx = 0; pidx < sp_getCap (); pidx ++ ) {
+                sp_isValid ( pidx );
+        }
+#endif
+
+        /* kill oldest procs if memory is above its capacity */
         while ( sm_overCap ()) {
                 sp_kill ();
         }
 
         end:
+        /* apply mutations */
         se_cMutate ();
         se_pMutate ();
 }

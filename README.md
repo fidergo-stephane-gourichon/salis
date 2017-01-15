@@ -5,8 +5,8 @@
 TIERRA simulation, but with my very own set of tweaks. Having a grasp on TIERRA
 will make understanding this simulation a lot easier.
 
-[Video about Tierra](https://www.youtube.com/watch?v=Wl5rRGVD0QI)
-[Read about Tierra](http://life.ou.edu/pubs/doc/index.html#What)
+- [Video about Tierra](https://www.youtube.com/watch?v=Wl5rRGVD0QI)
+- [Read about Tierra](http://life.ou.edu/pubs/doc/index.html#What)
 
 For those that already know TIERRA, the main differences between it and SALIS
 are:

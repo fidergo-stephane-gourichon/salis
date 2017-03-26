@@ -345,10 +345,12 @@ sp_create ( suint mb1p, suint mb1s, suint lock, sbool isal )
                 suint sa = mb1p + mi;
 
                 assert ( !sm_isUsed ( sa ));
+                assert ( !sm_isMBStart ( sa ));
 
                 sm_alloc ( sa );
         }
 
+        sm_setMBStart ( mb1p );
 
         end:
         pi = newProc ( lock );
@@ -366,11 +368,15 @@ freeBlock ( suint addr, suint size )
 {
         suint mi;
 
+        assert ( sm_isMBStart ( addr ));
+        sm_unsetMBStart ( addr );
+
         for ( mi = 0; mi < size; mi ++ ) {
                 suint ma = addr + mi;
 
                 assert ( sm_isValid ( ma ));
                 assert ( sm_isUsed ( ma ));
+                assert ( !sm_isMBStart ( ma ));
 
                 sm_dealloc ( ma );
         }
@@ -384,7 +390,10 @@ freeProcMem ( const SProc * proc )
         assert ( !isFree ( proc ));
 
         freeBlock ( proc -> b1p, proc -> b1s );
-        freeBlock ( proc -> b2p, proc -> b2s );
+
+        if ( proc -> b2s ) {
+                freeBlock ( proc -> b2p, proc -> b2s );
+        }
 }
 
 void
@@ -686,7 +695,14 @@ alloc ( SProc * proc, sbool fwrd )
         proc -> b2s ++;
 
         if (( proc -> b1p == proc -> b2p ) || !fwrd ) {
+                /* unset old memory block starter marker */
+                if ( proc -> b1p != proc -> b2p ) {
+                        sm_unsetMBStart ( proc -> b2p );
+                }
+
+                /* relocate mb2's begin address */
                 proc -> b2p = proc -> sp;
+                sm_setMBStart ( proc -> b2p );
         }
 
         proc -> sp += in;
@@ -995,9 +1011,11 @@ isUsedValid ( SProc * proc )
         assert ( !isFree ( proc ));
 
         assert ( proc -> b1s );
+        assert ( sm_isMBStart ( proc -> b1p ));
 
         if ( proc -> b2p != proc -> b1p ) {
                 assert ( proc -> b2s );
+                assert ( sm_isMBStart ( proc -> b2p ));
         }
 
         for ( mi = 0; mi < proc -> b1s; mi ++ ) {

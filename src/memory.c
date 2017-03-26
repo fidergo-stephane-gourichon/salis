@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <salis.h>
 
+#define MBST_MASK 0x80
 #define USED_MASK 0x40
 #define INST_MASK 0x3f
 
 static sbool   g_isInit;
 static suint   g_order;
 static suint   g_size;
+static suint   g_mbsc;
 static suint   g_used;
 static suint   g_cap;
 static suint   g_minbs;
@@ -45,6 +47,7 @@ sm_quit ( void )
         g_isInit = SFALSE;
         g_order  = 0;
         g_size   = 0;
+        g_mbsc   = 0;
         g_used   = 0;
         g_cap    = 0;
         g_minbs  = 0;
@@ -61,6 +64,7 @@ sm_save ( FILE * file )
         fwrite ( &g_isInit, sizeof ( sbool ), 1, file );
         fwrite ( &g_order,  sizeof ( suint ), 1, file );
         fwrite ( &g_size,   sizeof ( suint ), 1, file );
+        fwrite ( &g_mbsc,   sizeof ( suint ), 1, file );
         fwrite ( &g_used,   sizeof ( suint ), 1, file );
         fwrite ( &g_cap,    sizeof ( suint ), 1, file );
         fwrite ( &g_minbs,  sizeof ( suint ), 1, file );
@@ -78,6 +82,7 @@ sm_load ( FILE * file )
         fread ( &g_isInit, sizeof ( sbool ), 1, file );
         fread ( &g_order,  sizeof ( suint ), 1, file );
         fread ( &g_size,   sizeof ( suint ), 1, file );
+        fread ( &g_mbsc,   sizeof ( suint ), 1, file );
         fread ( &g_used,   sizeof ( suint ), 1, file );
         fread ( &g_cap,    sizeof ( suint ), 1, file );
         fread ( &g_minbs,  sizeof ( suint ), 1, file );
@@ -106,6 +111,12 @@ suint
 sm_getSize ( void )
 {
         return g_size;
+}
+
+suint
+sm_getMBSCount ( void )
+{
+        return g_mbsc;
 }
 
 suint
@@ -179,6 +190,15 @@ sm_isValid ( suint addr )
 }
 
 sbool
+sm_isMBStart ( suint addr )
+{
+        assert ( g_isInit );
+        assert ( sm_isValid ( addr ));
+
+        return !!( g_data [ addr ] & MBST_MASK );
+}
+
+sbool
 sm_isUsed ( suint addr )
 {
         assert ( g_isInit );
@@ -188,16 +208,47 @@ sm_isUsed ( suint addr )
 }
 
 void
+sm_setMBStart ( suint addr )
+{
+        assert ( g_isInit );
+        assert ( sm_isValid ( addr ));
+        assert ( !sm_isMBStart ( addr ));
+
+        g_data [ addr ] ^= MBST_MASK;
+        g_mbsc ++;
+
+        assert ( sm_isMBStart ( addr ));
+        assert ( g_mbsc );
+        assert ( g_mbsc <= g_size );
+}
+
+void
+sm_unsetMBStart ( suint addr )
+{
+        assert ( g_isInit );
+        assert ( g_mbsc );
+        assert ( sm_isValid ( addr ));
+        assert ( sm_isMBStart ( addr ));
+
+        g_data [ addr ] ^= MBST_MASK;
+        g_mbsc --;
+
+        assert ( !sm_isMBStart ( addr ));
+        assert ( g_mbsc <= g_size );
+}
+
+void
 sm_alloc ( suint addr )
 {
         assert ( g_isInit );
         assert ( sm_isValid ( addr ));
         assert ( !sm_isUsed ( addr ));
 
-        g_data [ addr ] |= USED_MASK;
+        g_data [ addr ] ^= USED_MASK;
         g_used ++;
 
         assert ( sm_isUsed ( addr ));
+        assert ( g_used );
         assert ( g_used <= g_size );
 }
 
@@ -209,7 +260,7 @@ sm_dealloc ( suint addr )
         assert ( sm_isValid ( addr ));
         assert ( sm_isUsed ( addr ));
 
-        g_data [ addr ] &= INST_MASK;
+        g_data [ addr ] ^= USED_MASK;
         g_used --;
 
         assert ( !sm_isUsed ( addr ));
@@ -232,6 +283,6 @@ sm_setInst ( suint addr, sbyte inst )
         assert ( sm_isValid ( addr ));
         assert ( si_isInst ( inst ));
 
-        g_data [ addr ] &= USED_MASK;
+        g_data [ addr ] &= ( MBST_MASK | USED_MASK );
         g_data [ addr ] |= inst;
 }

@@ -12,8 +12,6 @@ static suint   g_size;
 static suint   g_mbsc;
 static suint   g_used;
 static suint   g_cap;
-static suint   g_minbs;
-static suint   g_maxbs;
 static sbyte * g_data;
 
 void
@@ -29,8 +27,6 @@ sm_init ( suint ordr )
         g_order  = ordr;
         g_size   = 1 << ordr;
         g_cap    = g_size / 2;
-        g_minbs  = 1;
-        g_maxbs  = -1;
         g_data   = calloc ( g_size, bs );
 
         assert ( g_data );
@@ -50,8 +46,6 @@ sm_quit ( void )
         g_mbsc   = 0;
         g_used   = 0;
         g_cap    = 0;
-        g_minbs  = 0;
-        g_maxbs  = 0;
         g_data   = NULL;
 }
 
@@ -67,8 +61,6 @@ sm_save ( FILE * file )
         fwrite ( &g_mbsc,   sizeof ( suint ), 1, file );
         fwrite ( &g_used,   sizeof ( suint ), 1, file );
         fwrite ( &g_cap,    sizeof ( suint ), 1, file );
-        fwrite ( &g_minbs,  sizeof ( suint ), 1, file );
-        fwrite ( &g_maxbs,  sizeof ( suint ), 1, file );
 
         fwrite ( g_data, sizeof ( sbyte ), g_size, file );
 }
@@ -85,8 +77,6 @@ sm_load ( FILE * file )
         fread ( &g_mbsc,   sizeof ( suint ), 1, file );
         fread ( &g_used,   sizeof ( suint ), 1, file );
         fread ( &g_cap,    sizeof ( suint ), 1, file );
-        fread ( &g_minbs,  sizeof ( suint ), 1, file );
-        fread ( &g_maxbs,  sizeof ( suint ), 1, file );
 
         g_data = calloc ( g_size, sizeof ( *g_data ));
 
@@ -139,18 +129,6 @@ sm_getCap ( void )
         return g_cap;
 }
 
-suint
-sm_getMinBSize ( void )
-{
-        return g_minbs;
-}
-
-suint
-sm_getMaxBSize ( void )
-{
-        return g_maxbs;
-}
-
 void
 sm_setCap ( suint ncap )
 {
@@ -159,26 +137,6 @@ sm_setCap ( suint ncap )
         assert ( ncap <= g_size );
 
         g_cap = ncap;
-}
-
-void
-sm_setMinBSize ( suint size )
-{
-        assert ( g_isInit );
-        assert ( size );
-        assert ( size <= g_maxbs );
-
-        g_minbs = size;
-}
-
-void
-sm_setMaxBSize ( suint size )
-{
-        assert ( g_isInit );
-        assert ( size );
-        assert ( size >= g_minbs );
-
-        g_maxbs = size;
 }
 
 sbool

@@ -9,7 +9,6 @@ static suint   g_cap;
 static suint   g_first;
 static suint   g_last;
 static SProc * g_procs;
-static sbool   g_fhalt;
 
 void
 sp_init ( void )
@@ -42,7 +41,6 @@ sp_quit ( void )
         g_first  = 0;
         g_last   = 0;
         g_procs  = NULL;
-        g_fhalt  = SFALSE;
 }
 
 void
@@ -56,7 +54,6 @@ sp_save ( FILE * file )
         fwrite ( &g_cap,    sizeof ( suint ), 1, file );
         fwrite ( &g_first,  sizeof ( suint ), 1, file );
         fwrite ( &g_last,   sizeof ( suint ), 1, file );
-        fwrite ( &g_fhalt,  sizeof ( sbool ), 1, file );
 
         fwrite ( g_procs, sizeof ( SProc ), g_cap, file );
 }
@@ -72,7 +69,6 @@ sp_load ( FILE * file )
         fread ( &g_cap,    sizeof ( suint ), 1, file );
         fread ( &g_first,  sizeof ( suint ), 1, file );
         fread ( &g_last,   sizeof ( suint ), 1, file );
-        fread ( &g_fhalt,  sizeof ( sbool ), 1, file );
 
         g_procs = calloc ( g_cap, sizeof ( SProc ));
 
@@ -226,20 +222,6 @@ sp_isOnMB2 ( suint pidx, suint addr )
         return inBlock ( pr -> b2p, pr -> b2s, addr );
 }
 
-sbool
-sp_getFHalt ( void )
-{
-        return g_fhalt;
-}
-
-void
-sp_setFHalt ( sbool halt )
-{
-        assert ( g_isInit );
-
-        g_fhalt = halt;
-}
-
 static void
 pRealloc ( suint lock )
 {
@@ -368,7 +350,9 @@ freeBlock ( suint addr, suint size )
 {
         suint mi;
 
+        assert ( size );
         assert ( sm_isMBStart ( addr ));
+
         sm_unsetMBStart ( addr );
 
         for ( mi = 0; mi < size; mi ++ ) {
@@ -434,10 +418,8 @@ onFault ( SProc * proc )
         assert ( proc );
         assert ( !isFree ( proc ));
 
-        if ( !g_fhalt ) {
-                proc -> ip ++;
-                proc -> sp = proc -> ip;
-        }
+        proc -> ip ++;
+        proc -> sp = proc -> ip;
 }
 
 static sbool
@@ -647,12 +629,6 @@ alloc ( SProc * proc, sbool fwrd )
 
         bs = *rg [ 0 ];
 
-        /* halt if block size is of invalid size */
-        if ( bs < sm_getMinBSize () || bs > sm_getMaxBSize ()) {
-                onFault ( proc );
-                return;
-        }
-
         /* allocation was successful */
         if ( bs == proc -> b2s ) {
                 proc -> ip ++;
@@ -680,7 +656,7 @@ alloc ( SProc * proc, sbool fwrd )
 
         /* sp must stay adjecent to allocated memory block */
         if ( proc -> b2s ) {
-                suint of = ( fwrd ? proc -> b2s : ( suint ) -1);
+                suint of = ( fwrd ? proc -> b2s : ( suint ) -1 );
                 suint ad = proc -> b2p + of;
 
                 if ( ad != proc -> sp ) {

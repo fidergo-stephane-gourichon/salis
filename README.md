@@ -26,7 +26,7 @@ To watch an introductory video about *SALIS*
 ### Details
 - *SALIS* is an API, so an UI must be written to communicate with it
 - *SALIS* is written in C
-- *SALIS* must be compiled as a static library (e.g. *libsalis.a*)
+- *SALIS* must be compiled as a library (e.g. *libsalis.a*)
 
 ### Organisms consist of
 - Registers
@@ -37,21 +37,20 @@ To watch an introductory video about *SALIS*
 ### Queue
 - Newborn organisms are placed on top of the queue
 - Organisms are killed at the bottom of the queue
-- Organisms may halt on, or ignore, faulty instructions (faults)
+- Organisms ignore faulty instructions (faults)
 
 ### Instruction set
 *SALIS*' organisms read a simple language similar to ASM. This language
 consists of 64 instructions, each with an associated name and symbol.
-If *halting* is enabled, a program will halt whenever it commits a *fault*.
-If not, faulty instructions are ignored.
+Whenever an organism performs an invalid instruction it's considered a *fault*.
+To preserve robustness, faulty instructions are simply ignored by the
+organisms and its IP is incremented to the next address.
 
 #### Faults
 - IP or SP reaching ends of memory
 - Perform search or attempt a jump without a following key
 - Writing to a non-locally-allocated or invalid address
 - Reading (loading) from an invalid address
-- Allocating block of less than minimum allowed size
-- Allocating block of more than maximum allowed size
 - SP on address non-adjacent to child memory block while allocating
 - Swapping, freeing or splitting when not owning 2 memory blocks
 - Dividing by zero
@@ -68,7 +67,7 @@ If not, faulty instructions are ignored.
 |BSWP*   |%     |14    |Swap parent and child memory blocks.                                  |
 |BCLR*   |&#124;|15    |Free child memory block.                                              |
 |SPLT*   |$     |16    |Split. Child memory block becomes new organism.                       |
-|HALT*   |z     |17    |Halt. Always stops execution (even if *halting* is disabled).         |
+|HALT*   |z     |17    |Halt. Always stops execution.                                         |
 |ADDN    |+     |18    |Add (r[1] = r[2] + r[3]).                                             |
 |SUBN    |-     |19    |Subtract (r[1] = r[2] - r[3]).                                        |
 |MULN    |*     |20    |Multiply (r[1] = r[2] * r[3]).                                        |
@@ -103,7 +102,7 @@ are set to r1x.
 |[b      |r1x  |---  |---  |r1x = address of closest previous LOKB    |
 
 ## Building instructions
-You'll need nothing but a C compiler (C89). A sample makefile (Sample.make)
+You'll need nothing but a C compiler (C89). A sample makefile (Makefile)
 is provided for GNU Make. Feel free to edit the makefile as needed.
 Code should compile easily on all platforms and on all C89 compliant compilers.
 If you run into any difficulties, please let me know!

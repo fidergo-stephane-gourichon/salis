@@ -56,36 +56,36 @@ organisms and its IP is incremented to the next address.
 - Dividing by zero
 
 #### Instructions
-|Name    |Sym.  |Val.  |Description                                                           |
-|:-------|:-----|:-----|---------------------------------------------------------------------:|
-|NOOP    |      |00    |No operation. Does nothing.                                           |
-|NOP1-6  |1-6   |01-06 |No operation. Modifies registers to be used (r1x to r6x).             |
-|JMPB-F* |()    |07-08 |Jump to lock matching following key.                                  |
-|ADRB-F* |[]    |09-10 |Search for lock matching following key and store on r[1].             |
-|IFNZ    |?     |11    |If r[1] is not zero, execute following instruction. Skip otherwise.   |
-|ALLB-F* |{}    |12-13 |Allocate block of size stored on r[1]. Store its address on r[2].     |
-|BSWP*   |%     |14    |Swap parent and child memory blocks.                                  |
-|BCLR*   |&#124;|15    |Free child memory block.                                              |
-|SPLT*   |$     |16    |Split. Child memory block becomes new organism.                       |
-|HALT*   |z     |17    |Halt. Always stops execution.                                         |
-|ADDN    |+     |18    |Add (r[1] = r[2] + r[3]).                                             |
-|SUBN    |-     |19    |Subtract (r[1] = r[2] - r[3]).                                        |
-|MULN    |*     |20    |Multiply (r[1] = r[2] * r[3]).                                        |
-|DIVN*   |/     |21    |Divide (r[1] = r[2] / r[3]). Faults if divisor is zero.               |
-|INCN    |^     |22    |Increment (r[1]++).                                                   |
-|DECN    |v     |23    |Decrement (r[1]--).                                                   |
-|NOTN    |!     |24    |Not (r[1] != r[1]).                                                   |
-|SHFL    |<     |25    |Shift left by 1 (r[1] << 1).                                          |
-|SHFR    |>     |26    |Shift right by 1 (r[1] >> 1).                                         |
-|ZERO    |0     |27    |Put zero (r[1] = 0).                                                  |
-|LOAD*   |.     |28    |Load instruction at address pointed by r[1] into r[2].                |
-|WRTE*   |:     |29    |Write instruction on r[2] to address pointed by r[1].                 |
-|DUPL    |"     |30    |Duplicate value on r[1] into r[2].                                    |
-|SWAP    |x     |31    |Swap values on r[1] and r[2].                                         |
-|KEYA-P  |a-p   |32-47 |Keys.                                                                 |
-|LOKA-P  |A-P   |48-63 |Locks.                                                                |
+|Name     |Sym.  |Val.  |Description                                                           |
+|:--------|:-----|:-----|---------------------------------------------------------------------:|
+|NOOP     |      |00    |No operation. Does nothing.                                           |
+|NOP1-6   |1-6   |01-06 |No operation. Modifies registers to be used (r1x to r6x).             |
+|JMPB-F\* |()    |07-08 |Jump to lock matching following key.                                  |
+|ADRB-F\* |[]    |09-10 |Search for lock matching following key and store on r[1].             |
+|IFNZ     |?     |11    |If r[1] is not zero, execute following instruction. Skip otherwise.   |
+|ALLB-F\* |{}    |12-13 |Allocate block of size stored on r[1]. Store its address on r[2].     |
+|BSWP\*   |%     |14    |Swap parent and child memory blocks.                                  |
+|BCLR\*   |\|    |15    |Free child memory block.                                              |
+|SPLT\*   |$     |16    |Split. Child memory block becomes new organism.                       |
+|HALT\*   |z     |17    |Halt. Always stops execution.                                         |
+|ADDN     |+     |18    |Add (r[1] = r[2] + r[3]).                                             |
+|SUBN     |-     |19    |Subtract (r[1] = r[2] - r[3]).                                        |
+|MULN     |\*    |20    |Multiply (r[1] = r[2] \* r[3]).                                       |
+|DIVN\*   |/     |21    |Divide (r[1] = r[2] / r[3]). Faults if divisor is zero.               |
+|INCN     |^     |22    |Increment (r[1]++).                                                   |
+|DECN     |v     |23    |Decrement (r[1]--).                                                   |
+|NOTN     |!     |24    |Not (r[1] != r[1]).                                                   |
+|SHFL     |<     |25    |Shift left by 1 (r[1] << 1).                                          |
+|SHFR     |>     |26    |Shift right by 1 (r[1] >> 1).                                         |
+|ZERO     |0     |27    |Put zero (r[1] = 0).                                                  |
+|LOAD\*   |.     |28    |Load instruction at address pointed by r[1] into r[2].                |
+|WRTE\*   |:     |29    |Write instruction on r[2] to address pointed by r[1].                 |
+|DUPL     |"     |30    |Duplicate value on r[1] into r[2].                                    |
+|SWAP     |x     |31    |Swap values on r[1] and r[2].                                         |
+|KEYA-P   |a-p   |32-47 |Keys.                                                                 |
+|LOKA-P   |A-P   |48-63 |Locks.                                                                |
 
-Instructions that may fault are marked with an asterisk (*) on the table above.
+Instructions that may fault are marked with an asterisk (\*) on the table above.
 
 Instructions that modify values on registers may be followed by
 up to 3 register modifiers (r[1], r[2] and r[3]). By default, all registers
@@ -95,7 +95,7 @@ are set to r1x.
 |:-------|:----|:----|:----|-----------------------------------------:|
 |+236    |r2x  |r3x  |r6x  |r2x = r3x + r6x                           |
 |-22     |r2x  |r2x  |r1x  |r2x = r2x - r1x                           |
-|*       |r1x  |r1x  |r1x  |r1x = r1x * r1x                           |
+|\*      |r1x  |r1x  |r1x  |r1x = r1x \* r1x                          |
 |!5      |r5x  |---  |---  |r5x = !r5x                                |
 |"12     |r1x  |r2x  |---  |swap r1x and r2x                          |
 |]a2     |r2x  |---  |---  |r2x = address of closest following LOKA   |

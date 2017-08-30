@@ -67,17 +67,17 @@ organisms and its IP is incremented to the next address.
 |BSWP\*   |%     |14    |Swap parent and child memory blocks.                                  |
 |BCLR\*   |\|    |15    |Free child memory block.                                              |
 |SPLT\*   |$     |16    |Split. Child memory block becomes new organism.                       |
-|HALT\*   |z     |17    |Halt. Always stops execution.                                         |
-|ADDN     |+     |18    |Add (r[1] = r[2] + r[3]).                                             |
-|SUBN     |-     |19    |Subtract (r[1] = r[2] - r[3]).                                        |
-|MULN     |\*    |20    |Multiply (r[1] = r[2] \* r[3]).                                       |
-|DIVN\*   |/     |21    |Divide (r[1] = r[2] / r[3]). Faults if divisor is zero.               |
-|INCN     |^     |22    |Increment (r[1]++).                                                   |
-|DECN     |v     |23    |Decrement (r[1]--).                                                   |
-|NOTN     |!     |24    |Not (r[1] != r[1]).                                                   |
-|SHFL     |<     |25    |Shift left by 1 (r[1] << 1).                                          |
-|SHFR     |>     |26    |Shift right by 1 (r[1] >> 1).                                         |
-|ZERO     |0     |27    |Put zero (r[1] = 0).                                                  |
+|ADDN     |+     |17    |Add (r[1] = r[2] + r[3]).                                             |
+|SUBN     |-     |18    |Subtract (r[1] = r[2] - r[3]).                                        |
+|MULN     |\*    |19    |Multiply (r[1] = r[2] \* r[3]).                                       |
+|DIVN\*   |/     |20    |Divide (r[1] = r[2] / r[3]). Faults if divisor is zero.               |
+|INCN     |^     |21    |Increment (r[1]++).                                                   |
+|DECN     |v     |22    |Decrement (r[1]--).                                                   |
+|NOTN     |!     |23    |Not (r[1] != r[1]).                                                   |
+|SHFL     |<     |24    |Shift left by 1 (r[1] << 1).                                          |
+|SHFR     |>     |25    |Shift right by 1 (r[1] >> 1).                                         |
+|ZERO     |z     |26    |Put zero (r[1] = 0).                                                  |
+|UNIT     |u     |27    |Put one (r[1] = 1).                                                   |
 |LOAD\*   |.     |28    |Load instruction at address pointed by r[1] into r[2].                |
 |WRTE\*   |:     |29    |Write instruction on r[2] to address pointed by r[1].                 |
 |DUPL     |"     |30    |Duplicate value on r[1] into r[2].                                    |

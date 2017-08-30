@@ -830,6 +830,9 @@ r1op ( SProc * proc, sbyte inst )
         case SZERO:
                 *rg = 0;
                 break;
+        case SUNIT:
+                *rg = 1;
+                break;
         default:
                 assert ( 0 );
         }
@@ -1086,8 +1089,6 @@ sp_cycle ( suint pidx )
         case SSPLT:
                 split ( pr );
                 break;
-        case SHALT:
-                return;
         case SADDN:
         case SSUBN:
         case SMULN:
@@ -1100,6 +1101,7 @@ sp_cycle ( suint pidx )
         case SSHFL:
         case SSHFR:
         case SZERO:
+        case SUNIT:
                 r1op ( pr, in );
                 break;
         case SLOAD:

@@ -23,7 +23,6 @@
         SINST( SBSWP, '%' ) \
         SINST( SBCLR, '|' ) \
         SINST( SSPLT, '$' ) \
-        SINST( SHALT, 'z' ) \
                             \
         SINST( SADDN, '+' ) \
         SINST( SSUBN, '-' ) \
@@ -34,7 +33,8 @@
         SINST( SNOTN, '!' ) \
         SINST( SSHFL, '<' ) \
         SINST( SSHFR, '>' ) \
-        SINST( SZERO, '0' ) \
+        SINST( SZERO, 'z' ) \
+        SINST( SUNIT, 'u' ) \
                             \
         SINST( SLOAD, '.' ) \
         SINST( SWRTE, ':' ) \

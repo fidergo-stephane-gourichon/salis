@@ -12,10 +12,8 @@ suint sm_getOrder     ( void );
 suint sm_getSize      ( void );
 suint sm_getMBSCount  ( void );
 suint sm_getUsed      ( void );
-sbool sm_overCap      ( void );
-
 suint sm_getCap       ( void );
-void  sm_setCap       ( suint ncap );
+sbool sm_overCap      ( void );
 
 sbool sm_isValid      ( suint addr );
 sbool sm_isMBStart    ( suint addr );

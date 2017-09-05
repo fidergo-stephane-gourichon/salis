@@ -115,28 +115,18 @@ sm_getUsed ( void )
         return g_used;
 }
 
-sbool
-sm_overCap ( void )
-{
-        assert ( g_isInit );
-
-        return g_used > g_cap;
-}
-
 suint
 sm_getCap ( void )
 {
         return g_cap;
 }
 
-void
-sm_setCap ( suint ncap )
+sbool
+sm_overCap ( void )
 {
         assert ( g_isInit );
-        assert ( ncap );
-        assert ( ncap <= g_size );
 
-        g_cap = ncap;
+        return g_used > g_cap;
 }
 
 sbool
